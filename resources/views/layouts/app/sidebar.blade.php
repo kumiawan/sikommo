@@ -12,8 +12,28 @@
 
             <flux:sidebar.nav>
                 <flux:sidebar.group :heading="__('Platform')" class="grid">
-                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                    <flux:sidebar.item icon="squares-2x2" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="user-group" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                        {{ __('Kontak') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="map-pin" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                        {{ __('Kunjungan') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="chat-bubble-left-right" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                        {{ __('Inbox Chat') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="shield-check" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                        {{ __('Pengguna & Audit') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="cog-6-tooth" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                        {{ __('Pengaturan') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
@@ -94,7 +114,7 @@
             <flux:toast.group>
                 <flux:toast />
             </flux:toast.group>
-        @endpersist
+            @endpersist
 
         @fluxScripts
     </body>
