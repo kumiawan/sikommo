@@ -20,7 +20,7 @@
                         {{ __('Kontak') }}
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="map-pin" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                    <flux:sidebar.item icon="map-pin" :href="route('visits.index')" :current="request()->routeIs('visits.*')" wire:navigate>
                         {{ __('Kunjungan') }}
                     </flux:sidebar.item>
 

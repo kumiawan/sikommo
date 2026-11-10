@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Contact extends Model
 {
@@ -41,5 +42,9 @@ class Contact extends Model
             $days <= 90    => 'amber',
             default        => 'red',
         };
+    }
+    public function visits(): HasMany
+    {
+        return $this->hasMany(Visit::class);
     }
 }
