@@ -28,7 +28,7 @@
                         {{ __('Inbox Chat') }}
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="shield-check" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                    <flux:sidebar.item icon="shield-check" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>
                         {{ __('Pengguna & Audit') }}
                     </flux:sidebar.item>
 

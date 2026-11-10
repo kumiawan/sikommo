@@ -2,6 +2,7 @@
 
 use App\Models\Contact;
 use App\Models\User;
+use App\Models\AuditLog;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
@@ -102,6 +103,8 @@ new #[Title('Kontak')] class extends Component {
             'agentId'    => ['nullable', 'exists:users,id'],
         ]);
 
+        $isEdit = (bool) $this->contactId;
+
         Contact::updateOrCreate(['id' => $this->contactId], [
             'name'     => $data['name'],
             'phone'    => $data['phone'],
@@ -109,6 +112,8 @@ new #[Title('Kontak')] class extends Component {
             'status'   => $data['formStatus'],
             'agent_id' => $data['agentId'],
         ]);
+
+        AuditLog::record(($isEdit ? 'Mengubah' : 'Menambah') . " kontak {$data['name']}");
 
         Flux::modal('contact-form')->close();
         Flux::toast('Kontak berhasil disimpan.');
@@ -122,14 +127,19 @@ new #[Title('Kontak')] class extends Component {
 
     public function delete(): void
     {
-        Contact::whereKey($this->deleteId)->delete();
+        $contact = Contact::find($this->deleteId);
+        if ($contact) {
+            AuditLog::record("Menghapus kontak {$contact->name}");
+            $contact->delete();
+        }
+
         $this->deleteId = null;
 
         Flux::modal('delete-contact')->close();
         Flux::toast('Kontak dihapus.');
     }
 };
-?>
+    ?>
 
 <div>
     <flux:heading size="xl" level="1" class="mb-6">Kontak</flux:heading>
@@ -150,14 +160,14 @@ new #[Title('Kontak')] class extends Component {
                     <flux:select.option value="">Semua tag</flux:select.option>
                     @foreach ($tags as $t)
                         <flux:select.option value="{{ $t }}">{{ $t }}</flux:select.option>
-                    @endforeach
+                        @endforeach
                 </flux:select>
 
                 <flux:select wire:model.live="status" class="sm:w-44">
                     <flux:select.option value="">Semua status</flux:select.option>
                     @foreach ($statuses as $s)
                         <flux:select.option value="{{ $s }}">{{ $s }}</flux:select.option>
-                    @endforeach
+                        @endforeach
                 </flux:select>
             </div>
 
@@ -192,7 +202,7 @@ new #[Title('Kontak')] class extends Component {
                         <flux:table.cell>
                             @if ($contact->tag)
                                 <flux:badge size="sm" inset="top bottom">{{ $contact->tag }}</flux:badge>
-                            @endif
+                                @endif
                         </flux:table.cell>
 
                         <flux:table.cell>{{ $contact->status }}</flux:table.cell>
@@ -202,9 +212,9 @@ new #[Title('Kontak')] class extends Component {
                                 <flux:badge size="sm" :color="$contact->lastVisitColor()" inset="top bottom">
                                     {{ $contact->lastVisitDays() }} hari lalu
                                 </flux:badge>
-                            @else
+                                @else
                                 <span class="text-zinc-400">-</span>
-                            @endif
+                                @endif
                         </flux:table.cell>
 
                         <flux:table.cell>{{ $contact->agent?->name ?? '-' }}</flux:table.cell>
@@ -217,13 +227,13 @@ new #[Title('Kontak')] class extends Component {
                             </div>
                         </flux:table.cell>
                     </flux:table.row>
-                @empty
+                    @empty
                     <flux:table.row>
                         <flux:table.cell colspan="7" class="py-8 text-center text-zinc-500">
                             Belum ada kontak.
                         </flux:table.cell>
                     </flux:table.row>
-                @endforelse
+                    @endforelse
             </flux:table.rows>
         </flux:table>
     </flux:card>
@@ -241,13 +251,13 @@ new #[Title('Kontak')] class extends Component {
                     <flux:select.option value="">Tanpa tag</flux:select.option>
                     @foreach ($tags as $t)
                         <flux:select.option value="{{ $t }}">{{ $t }}</flux:select.option>
-                    @endforeach
+                        @endforeach
                 </flux:select>
 
                 <flux:select wire:model="formStatus" label="Status">
                     @foreach ($statuses as $s)
                         <flux:select.option value="{{ $s }}">{{ $s }}</flux:select.option>
-                    @endforeach
+                        @endforeach
                 </flux:select>
             </div>
 
@@ -255,7 +265,7 @@ new #[Title('Kontak')] class extends Component {
                 <flux:select.option value="">Belum ditentukan</flux:select.option>
                 @foreach ($this->agents as $agent)
                     <flux:select.option value="{{ $agent->id }}">{{ $agent->name }}</flux:select.option>
-                @endforeach
+                    @endforeach
             </flux:select>
 
             <div class="flex justify-end gap-2">
